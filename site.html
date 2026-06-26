@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>EGO YAZILIM | ULTIMATE PRO</title>
+    <style>
+        body { background: #050505; color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .kutu { background: #111; padding: 40px; border-radius: 20px; border: 1px solid #333; width: 900px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; box-shadow: 0 0 20px rgba(0, 212, 255, 0.1); }
+        .btn-rgb { background: linear-gradient(90deg, #ff00c8, #ff0000); padding: 15px; border: none; color: white; cursor: pointer; width: 100%; border-radius: 8px; font-weight: bold; margin-top: 10px; position: relative; overflow: hidden; }
+        .btn-tiktok { background: #000; border: 1px solid #ff00c8; color: #fff; padding: 10px; border-radius: 8px; cursor: pointer; text-decoration: none; display: block; text-align: center; margin-top: 15px; }
+        .btn-loading { background: #444 !important; pointer-events: none; }
+        input { width: 100%; padding: 12px; border-radius: 5px; border: 1px solid #444; background: #1a1a1a; color: #fff; box-sizing: border-box; margin-bottom: 15px; }
+        #magaza-bolumu { display: none; }
+        .hizmet { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="kutu" id="giris-bolumu">
+    <div>
+        <h1 style="color:#00d4ff;">EGO YAZILIM</h1>
+        <video id="video" autoplay playsinline style="width:100%; border-radius:10px; margin-bottom:15px;"></video>
+        <input type="text" id="kullanici-adi" placeholder="Kullanıcı Adı">
+        <button class="btn-rgb" onclick="girisYap()">Sisteme Giriş Yap</button>
+        <p style="margin-top:20px; font-style:italic; color:#888;">"Tanrı Dağı kadar Türk, Hira Dağı kadar Müslümanız. 🦅"</p>
+    </div>
+</div>
+
+<div class="kutu" id="magaza-bolumu">
+    <div>
+        <h3>Hizmetlerimiz</h3>
+        <div class="hizmet"><span>Video Edit - 150 TL</span> <button class="btn-rgb" onclick="ekle('Video Edit', 150)" style="width:auto; margin:0;">Ekle</button></div>
+        <div class="hizmet"><span>Çiçek Kartı - 70 TL</span> <button class="btn-rgb" onclick="ekle('Çiçek Kartı', 70)" style="width:auto; margin:0;">Ekle</button></div>
+        <div class="hizmet"><span>Logo Tasarım - 200 TL</span> <button class="btn-rgb" onclick="ekle('Logo Tasarım', 200)" style="width:auto; margin:0;">Ekle</button></div>
+        
+        <h3 style="margin-top: 30px;">Sosyal Medya Destek</h3>
+        <div class="hizmet"><span>Hesap Analizi - 100 TL</span> <button class="btn-rgb" onclick="ekle('Hesap Analizi', 100)" style="width:auto; margin:0;">Ekle</button></div>
+        <div class="hizmet"><span>Profil Düzenleme - 80 TL</span> <button class="btn-rgb" onclick="ekle('Profil Düzenleme', 80)" style="width:auto; margin:0;">Ekle</button></div>
+        
+        <a href="https://www.tiktok.com/@egemen45_43" class="btn-tiktok" target="_blank">TikTok Hesabım 📱</a>
+    </div>
+    <div>
+        <h3>En Son Sepet</h3>
+        <input type="text" id="sepet-icerik" value="Boş" readonly>
+        <input type="text" id="indirim-input" placeholder="İndirim kodu (EGO20)" oninput="indirimUygula()">
+        <div id="toplam-gosterge" style="margin-bottom:10px; font-weight:bold; color:#00d4ff;">Toplam: 0 TL</div>
+        <button id="siparis-btn" class="btn-rgb" onclick="siparisEt()">WhatsApp'tan Siparişi Onayla</button>
+    </div>
+</div>
+
+<script>
+    const video = document.getElementById('video');
+    navigator.mediaDevices.getUserMedia({ video: true }).then(s => video.srcObject = s);
+
+    let sepet = [];
+    let toplam = 0;
+    let indirimOrani = 0;
+
+    function girisYap() {
+        let isim = document.getElementById('kullanici-adi').value;
+        if(isim !== "") {
+            localStorage.setItem('musteri', isim);
+            document.getElementById('giris-bolumu').style.display = 'none';
+            document.getElementById('magaza-bolumu').style.display = 'grid';
+        } else {
+            alert("İsmini girmelisin abem.");
+        }
+    }
+
+    function ekle(isim, fiyat) {
+        sepet.push(isim);
+        toplam += fiyat;
+        guncelleGosterge();
+        document.getElementById('sepet-icerik').value = sepet.join(", ");
+    }
+
+    function indirimUygula() {
+        let kod = document.getElementById('indirim-input').value;
+        indirimOrani = (kod === "EGO20") ? 0.20 : 0;
+        guncelleGosterge();
+    }
+
+    function guncelleGosterge() {
+        let indirimliFiyat = toplam * (1 - indirimOrani);
+        document.getElementById('toplam-gosterge').innerText = "Toplam: " + indirimliFiyat.toFixed(0) + " TL" + (indirimOrani > 0 ? " (%20 İndirimli)" : "");
+    }
+
+    function siparisEt() {
+        let btn = document.getElementById('siparis-btn');
+        btn.classList.add('btn-loading');
+        
+        let isim = localStorage.getItem('musteri');
+        let finalFiyat = toplam * (1 - indirimOrani);
+        let iban = "TR170006701000000013037950";
+        let hesapSahibi = "Egemen Özel";
+        
+        let mesaj1 = `Selam, ${isim}. Bizi tercih ettiğiniz için teşekkür ederiz! Siparişlerim: ${sepet.join(", ")}. İndirimli Toplam: ${finalFiyat.toFixed(0)} TL.`;
+        let mesaj2 = `Ödeme için Hesap Sahibi: ${hesapSahibi}, IBAN: ${iban}. Detaylı konuşalım abem.`;
+        
+        setTimeout(() => {
+            window.location.href = `https://wa.me/905376972838?text=${encodeURIComponent(mesaj1 + "\n\n" + mesaj2)}`;
+            btn.classList.remove('btn-loading');
+        }, 1000);
+    }
+</script>
+</body>
+</html>
