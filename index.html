@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ego Yazılım - Profesyonel Hizmetler</title>
+    <style>
+        body { background-color: #030710; color: white; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; }
+        #bgCanvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+        .main-card { background: rgba(26, 26, 26, 0.8); backdrop-filter: blur(10px); padding: 25px; border-radius: 20px; width: 100%; max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); border: 1px solid rgba(255, 100, 150, 0.2); text-align: center; max-height: 90vh; overflow-y: auto; }
+        h2 { color: #ff2a6d; font-size: 1.1rem; margin: 15px 0 10px; border-left: 4px solid #ff2a6d; padding-left: 10px; text-align: left; }
+        .row { display: flex; align-items: center; margin-bottom: 8px; padding: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; font-size: 0.9rem; }
+        button { background: #ff2a6d; border: none; padding: 5px 12px; color: white; border-radius: 5px; cursor: pointer; font-weight: bold; margin-left: auto; }
+        
+        .iban-code { background: #000; padding: 8px; border-radius: 5px; font-family: monospace; font-size: 0.85rem; margin-top: 5px; }
+        .siparis-btn { width: 100%; padding: 15px; background: linear-gradient(to right, #ff2a6d, #9b51e0); border: none; color: white; font-weight: bold; border-radius: 10px; cursor: pointer; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="main-card">
+    <h2>Dijital Tasarım & Edit</h2>
+    <div class="row"><span>Video Edit (150 TL)</span><button onclick="ekle('Video Edit', 150)">Ekle</button></div>
+    <div class="row"><span>Logo Tasarım (200 TL)</span><button onclick="ekle('Logo Tasarım', 200)">Ekle</button></div>
+    <div class="row"><span>Thumbnail Tasarım (75 TL)</span><button onclick="ekle('Thumbnail', 75)">Ekle</button></div>
+    <div class="row"><span>Sosyal Medya Paketi (300 TL)</span><button onclick="ekle('SM Paketi', 300)">Ekle</button></div>
+
+    <h2>Teknik Destek</h2>
+    <div class="row"><span>Hesap Analizi (100 TL)</span><button onclick="ekle('Hesap Analizi', 100)">Ekle</button></div>
+    <div class="row"><span>Profil Düzenleme (80 TL)</span><button onclick="ekle('Profil Düzenleme', 80)">Ekle</button></div>
+    <div class="row"><span>Güvenlik Optimizasyonu (120 TL)</span><button onclick="ekle('Güvenlik Opt.', 120)">Ekle</button></div>
+
+    <h2>🎁 Hediye Seçimi</h2>
+    <div class="row"><span>%10 İndirim Kuponu</span><button onclick="ekle('Hediye: %10 İndirim', 0)">Seç</button></div>
+    <div class="row"><span>Ücretsiz Oyun Kodu</span><button onclick="ekle('Hediye: Oyun Kodu', 0)">Seç</button></div>
+
+    <div style="background: rgba(255, 215, 0, 0.05); padding: 10px; border-radius: 10px; border: 1px dashed #ffd700; margin: 10px 0;">
+        <div style="color: #ffd700; font-size: 0.8rem; font-weight: bold;">💰 Destek Kumbarası</div>
+        <div class="iban-code" id="ibanText">TR17 0006 7010 0000 0013 0379 50</div>
+        <button style="width:100%; background:#ffd700; color:#000; margin-top:8px;" onclick="kopyala()">IBAN Kopyala</button>
+    </div>
+
+    <button class="siparis-btn" onclick="gonder()">Siparişi Onayla</button>
+</div>
+
+<script>
+    let sepet = [];
+    let toplam = 0;
+    function ekle(urun, fiyat) { sepet.push(urun); toplam += fiyat; alert(urun + ' sepete eklendi!'); }
+    function kopyala() { navigator.clipboard.writeText(document.getElementById('ibanText').innerText); alert('IBAN kopyalandı!'); }
+    function gonder() {
+        if(sepet.length === 0) { alert('Sepetin boş!'); return; }
+        let msg = "Sipariş: " + sepet.join(", ") + " | Toplam Tutar: " + toplam + " TL";
+        window.open("https://wa.me/905376972838?text=" + encodeURIComponent(msg), '_blank');
+    }
+    
+    // Animasyon
+    const canvas = document.getElementById('bgCanvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    function init() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; particles = []; for(let i=0; i<60; i++) particles.push({ x: Math.random()*canvas.width, y: Math.random()*canvas.height, size: Math.random()*3, speed: Math.random()*0.5 }); }
+    function animate() { ctx.fillStyle = "#030710"; ctx.fillRect(0,0, canvas.width, canvas.height); ctx.fillStyle = "rgba(255, 255, 255, 0.3)"; particles.forEach(p => { p.y -= p.speed; if(p.y < 0) p.y = canvas.height; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fill(); }); requestAnimationFrame(animate); }
+    window.addEventListener('resize', init);
+    init(); animate();
+</script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ego İletişim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #030710; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .card { background: rgba(26, 26, 26, 0.8); padding: 40px; border-radius: 20px; text-align: center; border: 1px solid #ff2a6d; width: 300px; box-shadow: 0 0 20px rgba(255, 42, 109, 0.2); }
+        
+        /* RGB EFEKTİ */
+        .btn { 
+            display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 15px; margin: 15px 0; border: none; border-radius: 10px; color: white; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 1.1rem;
+            background: linear-gradient(90deg, #ff0050, #00f2ea, #ff0050); 
+            background-size: 200% 200%;
+            animation: rgb-anim 3s infinite linear;
+        }
+        @keyframes rgb-anim { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        .btn:hover { opacity: 0.9; transform: scale(1.02); }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 style="margin-bottom: 30px;">Ego İletişim</h2>
+    
+    <a href="https://www.tiktok.com/@egemen45_43" class="btn" target="_blank">
+        <i class="fab fa-tiktok"></i> TİKTOK
+    </a>
+    
+    <a href="https://wa.me/905376972838?text=Destek almak istiyorum." class="btn" target="_blank">
+        <i class="fab fa-whatsapp"></i> CANLI DESTEK
+    </a>
+</div>
+
+</body>
+</html>
